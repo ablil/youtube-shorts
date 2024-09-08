@@ -1,0 +1,36 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  Restful API to download youtube shorts
+
+Globals:
+  Function:
+    Timeout: 15
+    MemorySize: 128
+
+Resources:
+  LambdaFunction:
+    Type: AWS::Serverless::Function 
+    Properties:
+      CodeUri: lambda/
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Architectures:
+        - x86_64
+      Events:
+        DownloadEvent:
+          Type: Api 
+          Properties:
+            Path: /youtube-shorts
+            Method: get
+
+Outputs:
+  API:
+    Description: "API Gateway endpoint URL for Prod stage for lambda function"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/youtube-shorts/"
+  LambdaFunction:
+    Description: "Lambda Function ARN"
+    Value: !GetAtt LambdaFunction.Arn
+  LambdaFunctionIamRole:
+    Description: "Implicit IAM Role created for lambda function"
+    Value: !GetAtt LambdaFunctionRole.Arn
